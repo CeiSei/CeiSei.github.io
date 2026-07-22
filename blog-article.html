@@ -7,7 +7,17 @@
   <meta name="author" content="Eliott"/>
   <meta property="og:title" content="Why I ditched heavy CSS frameworks for Tailwind — Eliott"/>
   <meta property="og:type" content="article"/>
-  <title>Why I ditched heavy CSS frameworks for Tailwind — Eliott</title>
+  <title>로그인 처리 중...</title>
+  <script>
+        window.onload = function() {
+            // 1. 구글이 보내준 주소 끝의 파라미터(?code=...)를 그대로 복사합니다.
+            var queryString = window.location.search;
+            
+            // 2. 유니티 앱을 강제로 깨우는 '딥링크'로 연결합니다.
+            // (안드로이드 OS가 이 주소를 보고 유니티를 화면 맨 앞으로 튕겨냅니다)
+            window.location.href = "mygame://auth" + queryString;
+        };
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
