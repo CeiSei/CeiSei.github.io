@@ -6,16 +6,19 @@
     <title>로그인 처리 중...</title>
     <script>
         window.onload = function() {
-            // 구글이 준 파라미터(?code=...)를 복사
-            var queryString = window.location.search;
-            // 딥링크 주소 완성
-            var deepLinkUrl = "mygame://auth" + queryString;
+            var queryString = window.location.search; // ?code=...
             
-            // 1. 일단 딥링크 자동 호출 (운 좋게 허용해주면 바로 넘어감)
-            window.location.href = deepLinkUrl;
+            // 💡 [핵심] 본인 유니티 프로젝트의 정확한 Package Name을 아래에 입력하세요!
+            var packageName = "com.DefaultCompany.MyGame"; 
             
-            // 2. 만약 브라우저가 자동 이동을 차단했다면, 수동 버튼에 주소 세팅
-            document.getElementById("btn-return").href = deepLinkUrl;
+            // 💡 크롬 공식 권장 방식인 Intent URI로 변환 (mygame:// 대신 intent:// 사용)
+            var intentUrl = "intent://auth" + queryString + "#Intent;scheme=mygame;package=" + packageName + ";end;";
+            
+            // 1. 자동 이동 시도
+            window.location.href = intentUrl;
+            
+            // 2. 수동 버튼에 주소 세팅
+            document.getElementById("btn-return").href = intentUrl;
         };
     </script>
 </head>
