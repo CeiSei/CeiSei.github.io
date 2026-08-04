@@ -2,23 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>로그인 인증 중계</title>
+    <title>로그인 자동 연동 중...</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #222; color: #fff; }
-        .box { background: #333; padding: 30px; display: inline-block; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        input { width: 350px; padding: 12px; font-size: 16px; text-align: center; margin-top: 10px; background: #222; color: #0ff; border: 1px solid #555; border-radius: 4px; }
+        .box { background: #333; padding: 30px; display: inline-block; border-radius: 8px; }
         h3 { color: #4CAF50; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h3>로그인 성공!</h3>
-        <p id="status">인증 코드를 확인하는 중입니다...</p>
-        
-        <div id="pc-fallback" style="display:none;">
-            <p>아래 인증 코드를 복사하여 <b>Unity 게임 내 입력창</b>에 붙여넣어 주세요.</p>
-            <input type="text" id="authCodeInput" readonly onclick="this.select();">
-        </div>
+        <h3>로그인 처리 중...</h3>
+        <p id="status">게임으로 인증 정보를 전달하고 있습니다.</p>
     </div>
 
     <script>
@@ -26,25 +20,24 @@
         const code = urlParams.get('code');
 
         if (code) {
-            // 1. 모바일 환경 시도: 커스텀 스킴 호출하여 앱 복귀
+            // 1. 모바일 환경: 커스텀 스킴 호출
             const deepLinkUrl = `mygame://callback?code=${code}`;
-            window.location.href = deepLinkUrl;
+            
+            // 2. PC 환경: Unity 로컬 서버로 code 전송 시도
+            const localUnityUrl = `http://localhost:8080/?code=${code}`;
 
-            // 2. PC 환경 대응: 모바일이 아니거나 스킴 처리가 안 될 경우를 대비해 화면에 코드 노출
-            setTimeout(() => {
-                document.getElementById('status').innerText = "인증 코드가 발급되었습니다.";
-                document.getElementById('pc-fallback').style.display = "block";
-                document.getElementById('authCodeInput').value = code;
-                // 클립보드에 자동 복사 시도
-                navigator.clipboard.writeText(code).then(() => {
-                    console.log("클립보드에 코드가 복사되었습니다.");
-                }).catch(err => {
-                    console.log("클립보드 복사 실패 (수동 복사 필요)");
-                });
-            }, 500);
+            // 로컬 서버로 fetch 요청 전송 (CORS 우회를 위해 no-cors 모드 활용 또는 리다이렉트)
+            fetch(localUnityUrl, { mode: 'no-cors' }).then(() => {
+                document.getElementById('status').innerText = "연동 완료! 게임 창으로 돌아가세요.";
+            }).catch(err => {
+                // 로컬 서버가 안 켜져있거나 모바일인 경우 수동 복사 폴백 노출 가능
+                document.getElementById('status').innerText = "자동 전달 실패. 수동으로 코드를 복사해주세요: " + code;
+            });
+
+            // 모바일 스킴 호출 시도
+            window.location.href = deepLinkUrl;
         } else {
-            document.getElementById('status').style.color = "#ff5252";
-            document.getElementById('status').innerText = "로그인 실패: 인증 코드를 찾을 수 없습니다.";
+            document.getElementById('status').innerText = "로그인 실패: 코드가 없습니다.";
         }
     </script>
 </body>
