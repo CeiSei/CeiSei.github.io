@@ -24,7 +24,7 @@
             const deepLinkUrl = `mygame://callback?code=${code}`;
             
             // 2. PC 환경: Unity 로컬 서버로 code 전송 시도
-            const localUnityUrl = `http://localhost:8080/?code=${code}`;
+            const localUnityUrl = `http://localhost:8800/?code=${code}`;
 
             // 로컬 서버로 fetch 요청 전송 (CORS 우회를 위해 no-cors 모드 활용 또는 리다이렉트)
             fetch(localUnityUrl, { mode: 'no-cors' }).then(() => {
