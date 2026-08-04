@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>로그인 중계 중...</title>
+</head>
+<body>
+    <h3>로그인 처리 중입니다. 잠시만 기다려주세요...</h3>
+    <script>
+        // URL에서 쿼리 파라미터(code 등) 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            // Unity 앱으로 커스텀 스킴을 이용해 코드를 전달
+            const deepLinkUrl = `mygame://callback?code=${code}`;
+            
+            // 브라우저에서 커스텀 스킴 호출
+            window.location.href = deepLinkUrl;
+
+            // 1초 뒤 안내 문구 변경
+            setTimeout(() => {
+                document.body.innerHTML = "<h3>로그인이 완료되었습니다. 게임으로 돌아갑니다!</h3>";
+            }, 1000);
+        } else {
+            document.body.innerHTML = "<h3>로그인 실패: 인증 코드를 찾을 수 없습니다.</h3>";
+        }
+    </script>
+</body>
+</html>
