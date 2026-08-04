@@ -2,28 +2,40 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>로그인 중계 중...</title>
+    <title>로그인 인증 중계</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .box { background: #f4f4f4; padding: 20px; display: inline-block; border-radius: 8px; }
+        input { width: 300px; padding: 10px; font-size: 16px; text-align: center; }
+    </style>
 </head>
 <body>
-    <h3>로그인 처리 중입니다. 잠시만 기다려주세요...</h3>
+    <div class="box">
+        <h3>로그인 처리 중...</h3>
+        <p id="status">잠시만 기다려주세요.</p>
+        <div id="pc-fallback" style="display:none;">
+            <p>PC 환경이신가요? 아래 인증 코드를 복사하여 게임에 입력해주세요.</p>
+            <input type="text" id="authCodeInput" readonly onclick="this.select();">
+        </div>
+    </div>
+
     <script>
-        // URL에서 쿼리 파라미터(code 등) 추출
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
 
         if (code) {
-            // Unity 앱으로 커스텀 스킴을 이용해 코드를 전달
+            // 1. 모바일 시도: 커스텀 스킴 호출
             const deepLinkUrl = `mygame://callback?code=${code}`;
-            
-            // 브라우저에서 커스텀 스킴 호출
             window.location.href = deepLinkUrl;
 
-            // 1초 뒤 안내 문구 변경
+            // 2. PC 환경을 위한 Fallback (모바일이 아니라면 코드를 화면에 노출)
             setTimeout(() => {
-                document.body.innerHTML = "<h3>로그인이 완료되었습니다. 게임으로 돌아갑니다!</h3>";
-            }, 1000);
+                document.getElementById('status').innerText = "로그인 인증 코드가 발급되었습니다.";
+                document.getElementById('pc-fallback').style.display = "block";
+                document.getElementById('authCodeInput').value = code;
+            }, 500);
         } else {
-            document.body.innerHTML = "<h3>로그인 실패: 인증 코드를 찾을 수 없습니다.</h3>";
+            document.getElementById('status').innerText = "로그인 실패: 인증 코드가 없습니다.";
         }
     </script>
 </body>
